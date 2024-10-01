@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono&display=swap" rel="stylesheet">
+    <title>WebSocket Client</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="navi">
+    <div class="menu">
+      <div class="menu-item">System</div>
+      <div class="menu-item">Spaceship</div>
+      <div class="menu-item">Crew</div>
+      <div class="menu-item">Cargo</div>
+      <div class="menu-item"><span class="selected">_</span>Notifications</div>
+    </div>
+ </div>
+
+  <div 
+    class="separator" 
+  ></div> 
+
+  <div class="container">
+    <p>Received transmission</p>
+    <p class="status">status: <span id="status"></span><span class="dots"></span></p>
+    <p>details:<br/><span id="data"></span></p>
+  </div>
+<!-- 
+  <div 
+    class="separator" 
+    style="border-bottom: 1px solid #11ffb4; width: 100%; margin: 0 0 20px 0;"
+  ></div>  -->
+
+  <script>
+    // Token autoryzacyjny
+    const authToken = 'testtoken123';
+  
+    // Tworzenie połączenia WebSocket z tokenem w zapytaniu URL
+    const socket = new WebSocket(`ws://localhost:8082?token=${encodeURIComponent(authToken)}`);
+  
+    // Funkcja do wyświetlania tekstu jak w maszynie do pisania
+    const typeWriter = (elementId, text, speed) => {
+      let i = 0;
+      const element = document.getElementById(elementId);
+      const type = () => {
+        if (i < text.length) {
+          element.innerHTML += (text.charAt(i) === '\n') ? '<br/>' : text.charAt(i);
+          i++;
+          setTimeout(type, speed);
+        }
+      };
+      type();
+    };
+  
+    // Obsługa zdarzenia otwarcia połączenia
+    socket.onopen = () => {
+      document.getElementById("status").textContent += "active";
+      socket.send('Hello, server!');
+    };
+  
+    // Obsługa wiadomości przychodzących
+    socket.onmessage = (event) => {
+      const data = JSON.parse(event.data);
+      const formattedDetails = Object.entries(data)
+        .map(([key, value]) => `${key}: ${value}`)
+        .join('\n');
+  
+      // Resetowanie danych przed dodaniem nowych
+      document.getElementById("data").innerHTML = "";
+      typeWriter("data", formattedDetails, 30);
+    };
+  
+    // Obsługa błędów
+    socket.onerror = (error) => {
+      console.error('Błąd WebSocket:', error);
+    };
+  
+    // Obsługa zamknięcia połączenia
+    socket.onclose = (event) => {
+      console.log('Połączenie WebSocket zamknięte', event);
+    };
+  </script>
+</body>
+</html>

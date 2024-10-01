@@ -1,0 +1,83 @@
+body {
+  /* radail bacgorund */
+  background-image: radial-gradient(circle, rgb(12, 2, 8), rgb(25, 9, 8));
+  color: #01ffb7;
+  text-shadow: 0 0 10px rgb(105, 255, 233);
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 14px;
+  line-height: 1.6;
+  letter-spacing: 0.1em;
+}
+.status{
+  font-size: 20px;
+}
+/* bacground noise */
+body::before {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  background-image: url(https://grainy-gradients.vercel.app/noise.svg);
+  opacity: 0.25;
+  z-index: 2;
+  animation: move 10s infinite linear;
+}
+@keyframes move {
+  0% {
+    background-position: 0 0;
+  }
+  100% {
+    background-position: 100% 100%;
+  }
+}
+.separator {
+  border-bottom: 1px solid #01ffb7; width: 100%; margin: 0 0 20px 0;
+  /* glow */
+  box-shadow: 0 0 4px #01ffb7, 0 0 4px #01ffb7, 0 0 4px #01ffb7, 0 0 4px #01ffb7;
+}
+
+.navi{
+  margin: 30px 30px;
+  display: flex;
+  justify-content: end;
+  align-items: center;
+  text-align: right;
+}
+.container{
+  width: 700px;
+  margin: 120px 200px;
+  font-size: 18px;
+}
+
+.dots::after {
+  content: '';
+  display: inline-block;
+  width: 1em;
+  text-align: left;
+  animation: dot-blink 2s steps(3, end) infinite;
+}
+.selected{
+  animation: selected 1s linear infinite;
+}
+@keyframes selected {
+  50% {
+    opacity: 0;
+  }
+}
+@keyframes dot-blink {
+  0%, 20% {
+      content: '.';
+  }
+  40% {
+      content: '..';
+  }
+  60%, 80% {
+      content: '...';
+  }
+  100% {
+      content: '';
+  }
+}
